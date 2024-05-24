@@ -1,54 +1,69 @@
-import DeployButton from "../components/DeployButton";
-import AuthButton from "../components/AuthButton";
-import { createClient } from "@/utils/supabase/server";
-import ConnectSupabaseSteps from "@/components/tutorial/ConnectSupabaseSteps";
-import SignUpUserSteps from "@/components/tutorial/SignUpUserSteps";
-import Header from "@/components/Header";
+"use client";
 
-export default async function Index() {
-  const canInitSupabaseClient = () => {
-    // This function is just for the interactive tutorial.
-    // Feel free to remove it once you have Supabase connected.
+import Navbar from "@/components/Navbar";
+import TicketForm from "@/components/TicketForm";
+import Footer from "@/components/Footer";
+import { toast } from "sonner";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+
+export default function Index() {
+  const [submitted, setSubmitted] = useState<boolean>(false);
+
+  const submit = async (data: {
+    name: string;
+    email: string;
+    message: string;
+  }) => {
     try {
-      createClient();
-      return true;
-    } catch (e) {
-      return false;
+      const res = await fetch("/api/tickets", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Network response was not ok");
+
+      setSubmitted(true);
+      toast(`Sending email to ${data.email}`, {
+        description: `
+          <p>Subject: Support Request</p>
+          <p>Message: Thank you ${data.name}! We have received your request and will follow up soon.</p>
+        `,
+        action: {
+          label: "Close",
+          onClick: () => toast.dismiss(),
+        },
+      });
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const isSupabaseConnected = canInitSupabaseClient();
-
   return (
     <div className="flex-1 w-full flex flex-col gap-20 items-center">
-      <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-        <div className="w-full max-w-4xl flex justify-between items-center p-3 text-sm">
-          <DeployButton />
-          {isSupabaseConnected && <AuthButton />}
-        </div>
-      </nav>
+      <Navbar />
 
-      <div className="animate-in flex-1 flex flex-col gap-20 opacity-0 max-w-4xl px-3">
-        <Header />
-        <main className="flex-1 flex flex-col gap-6">
-          <h2 className="font-bold text-4xl mb-4">Next steps</h2>
-          {isSupabaseConnected ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
+      <div className="animate-in flex-1 flex flex-col gap-20 opacity-0 max-w-3xl px-3">
+        <main className="w-full flex-1 flex flex-col gap-6">
+          <h3 className="font-semibold text-3xl mb-4">How can we help?</h3>
+          <p>
+            Please fill out your information below and someone from our
+            top-notch support staff will be in touch with you!
+          </p>
+
+          {!submitted ? (
+            <TicketForm submit={submit} />
+          ) : (
+            <div className="animate-in">
+              <p className="mt-6">
+                Thank you for your support request. We will get back to you soon.
+              </p>
+              <Button className="max-w-[200px] mt-6" onClick={() => setSubmitted(false)}>Submit another request</Button>
+            </div>
+          )}
         </main>
       </div>
 
-      <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
-        <p>
-          Powered by{" "}
-          <a
-            href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-            target="_blank"
-            className="font-bold hover:underline"
-            rel="noreferrer"
-          >
-            Supabase
-          </a>
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }
