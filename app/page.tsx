@@ -1,11 +1,11 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
 import TicketForm from "@/components/TicketForm";
-import Footer from "@/components/Footer";
 import { toast } from "sonner";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export default function Index() {
   const [submitted, setSubmitted] = useState<boolean>(false);
@@ -39,9 +39,8 @@ export default function Index() {
   };
 
   return (
-    <div className="flex-1 w-full flex flex-col gap-20 items-center">
+    <>
       <Navbar />
-
       <div className="animate-in flex-1 flex flex-col gap-20 opacity-0 max-w-3xl px-3">
         <main className="w-full flex-1 flex flex-col gap-6">
           <h3 className="font-semibold text-3xl mb-4">How can we help?</h3>
@@ -55,15 +54,20 @@ export default function Index() {
           ) : (
             <div className="animate-in">
               <p className="mt-6">
-                Thank you for your support request. We will get back to you soon.
+                Thank you for your support request. We will get back to you
+                soon.
               </p>
-              <Button className="max-w-[200px] mt-6" onClick={() => setSubmitted(false)}>Submit another request</Button>
+              <Button
+                className="max-w-[200px] mt-6"
+                onClick={() => setSubmitted(false)}
+              >
+                Submit another request
+              </Button>
             </div>
           )}
         </main>
       </div>
-
       <Footer />
-    </div>
+    </>
   );
 }
