@@ -1,6 +1,5 @@
 import { GeistSans } from "geist/font/sans";
 import "../styles/globals.css";
-import { Toaster } from "@/components/ui/sonner";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -8,8 +7,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Zealthy Support",
-  description: "Zealthy support ticket system, submit a request here",
+  title: "Stepful Coaching",
+  description: "Stepful 1-on-1 coaching system",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
@@ -26,7 +25,6 @@ export default function RootLayout({
             {children}
           </div>
         </main>
-        <Toaster />
       </body>
     </html>
   );
